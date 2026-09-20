@@ -8,8 +8,8 @@
  * Find them in the Supabase dashboard under Project Settings -> API.
  */
 window.HOUSE_CONFIG = {
-  supabaseUrl: '',   // e.g. 'https://abcd1234.supabase.co'
-  anonKey: '',       // the "anon / public" key
+  supabaseUrl: 'https://lkdcouccilhcghfejorm.supabase.co',
+  anonKey: 'sb_publishable_cYDfv_FEAlpwNps3goaYqw_0ExXsTFt',   // Supabase "publishable" key — public-safe
 
   // Everyone shares ONE login. This is just its username — not a secret, safe to
   // commit. Create a user with this exact email (and your house password) in the
