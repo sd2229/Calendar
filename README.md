@@ -7,8 +7,9 @@ flat list of events, with a filter bar, a per-day drawer, an add/edit modal, a
 HTML file plus a small storage module.
 
 - **[`house-calendar.html`](house-calendar.html)** — the whole app. Renders off
-  `state.events`. Design, fonts, palette, and the hand-drawn house watermark are
-  original and unchanged.
+  `state.events`. Uses a photo of the House (`house.jpg`) as a muted background;
+  tune how much shows through with the `--house-scrim` CSS variable (0 = full
+  photo, 1 = plain parchment).
 - **[`src/store.js`](src/store.js)** — the one place that knows where data lives.
 - **[`events.json`](events.json)** — the 143 seed events (the current data).
 - **[`api/calendar.js`](api/calendar.js)** — the `/calendar.ics` subscription feed.
@@ -227,6 +228,7 @@ same break-skipping rule as the app, all in `America/New_York`.
 
 ```
 house-calendar.html      the app (loads config.js, then src/store.js)
+house.jpg                background photo of the House
 config.js                front-end backend selection (public values)
 src/store.js             the storage seam: local (IndexedDB) + remote (Supabase)
 events.json              143 seed events / current data

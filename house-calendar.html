@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Ultimate House Calendar</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -7,6 +9,7 @@
   --bg:#F3EADB; --surface:rgba(252,248,240,.72); --surface-2:rgba(243,234,217,.76); --ink:#241B11; --ink-2:#5C4B37;
   --muted:#93826A; --rule:#E3D6BF; --rule-strong:#CBB79A; --accent:#C1551B; --accent-ink:#FBF6EC;
   --green:#2F5D3F; --house:#8A5F31; --house-op:.32;
+  --house-photo:url('house.jpg'); --house-draw:none; --house-scrim:.80;
   --shadow:0 1px 2px rgba(36,27,17,.07),0 10px 30px -14px rgba(36,27,17,.28);
   --t-hm:#2a78d6; --t-cm:#eb6834; --t-forum:#1baf7a; --t-pref:#eda100;
   --t-soc:#e87ba4; --t-kitchen:#008300; --t-world:#4a3aa7; --t-dl:#e34948;
@@ -43,7 +46,8 @@ a{color:inherit}
 
 /* ---------- house watermark (original drawing; swap for a photo) ---------- */
 .housebg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;
-  background-image:var(--house-photo,none);background-size:cover;background-position:center 60%}
+  background-image:var(--house-photo,none);background-size:cover;background-position:center 35%}
+.housebg::after{content:"";position:absolute;inset:0;background:var(--bg);opacity:var(--house-scrim,.8)}
 .housebg svg{position:absolute;left:50%;bottom:-2vh;transform:translateX(-50%);width:min(2100px,185%);height:auto;
   opacity:var(--house-op);color:var(--house);display:var(--house-draw,block)}
 
@@ -332,14 +336,13 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
   <section class="rules">
     <div class="sec-h">
       <h2>Standing rules</h2>
-      <p>Timing the House already agreed to. These are not dates, they are clocks that start when you do something, so they live here instead of on the grid.</p>
+      <p>Clocks the House already agreed to.</p>
     </div>
     <div class="rulelist" id="rulelist"></div>
   </section>
 
   <footer class="foot">
-    <span>Entries marked <b>unconfirmed</b> are guesses. Open one and fix it.</span>
-    <span>Academic dates: Cornell Registrar, 2026&ndash;2027.</span>
+    <span>Cornell Registrar dates, 2026–27.</span>
     <span>Press F to present.</span>
   </footer>
 </div>
@@ -459,14 +462,14 @@ const COMMITTEES = [
 const CSHORT = Object.fromEntries(COMMITTEES.map(c=>[c[0],c[1].split(' — ')[0]]));
 
 const STANDING_RULES = [
-  ['BIRTs: 24 hours','A BIRT must reach the listserv at least 24 hours before the Housemeeting that considers it. The calendar puts that cutoff on the grid every week.','Catputter’s Rules of Order'],
-  ['Events with paid services: two weeks','Two weeks before a House event requiring services, the preliminary BIRT for the event and the purchase must be submitted and passed.','CBTA Bylaws VII.5.7'],
-  ['Service invoices: one week','Reimbursement forms for services rendered at a House event go to Treasurers at least one week before the event. Checks go to the provider on receipt of service.','CBTA Bylaws VII.5.5–5.6'],
-  ['Reimbursements: one month','Forms for items and services must be submitted to Treasurers exactly one month from the date of purchase. Nothing is accepted after the last day of class.','CBTA Bylaws VII.5.1–5.2'],
-  ['More than ten outside guests','Any gathering in the public areas involving more than ten people who are not community members must be approved in advance by legislation, naming a community member responsible for safety.','CBTA Bylaws, Social Gatherings Threshold'],
-  ['Attendance corrections: one week','Disputes about the attendance record must be noted in writing within one week of the record being posted. Five tardies equal one absence.','CBTA Bylaws V.4.d, V.1.b'],
-  ['Formal event lengths','PubSpeaks and formal AcAff events run one hour. Housemeeting runs two and a half. A CHEF runs however long its BIRT said it would.','CBTA Bylaws V.1.a'],
-  ['Vacating rooms','Branchmembers vacate their rooms two days after the last final, unless the Head of Staff or MPM approves a longer stay.','TARP IV.A.1(d)']
+  ['BIRTs: 24 hours','On the listserv 24h before the meeting that considers it.','Catputter’s Rules of Order'],
+  ['Paid services: two weeks','Preliminary BIRT and purchase passed two weeks out.','CBTA Bylaws VII.5.7'],
+  ['Service invoices: one week','Reimbursement forms to Treasurers a week before the event.','CBTA Bylaws VII.5.5–5.6'],
+  ['Reimbursements: one month','To Treasurers within a month of purchase; none after the last day of class.','CBTA Bylaws VII.5.1–5.2'],
+  ['Ten+ outside guests','Needs legislation in advance, naming who’s responsible for safety.','Social Gatherings Threshold'],
+  ['Attendance: one week','Dispute the record within a week. Five tardies = one absence.','CBTA Bylaws V.4.d, V.1.b'],
+  ['Event lengths','PubSpeaks one hour. Housemeeting until it finishes. CHEF as its BIRT says.','CBTA Bylaws V.1.a'],
+  ['Vacating rooms','Two days after the last final, unless Head of Staff or MPM says otherwise.','TARP IV.A.1(d)']
 ];
 
 /* ============================ date helpers ============================ */
