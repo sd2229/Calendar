@@ -750,13 +750,20 @@ function renderStatus(){
   if(state.authStatus==='loading'){
     S.innerHTML='<div class="banner"><b>Loading the calendar…</b></div>';
   } else if(remote && state.authStatus==='signed-out'){
-    S.innerHTML='<div class="banner"><b>This is the House calendar.</b> Sign in with your allow-listed Google account to view and edit it. '+
-      '<button class="btn btn-primary" id="signin" style="margin-left:6px">Sign in with Google</button></div>';
-    const b=$('signin'); if(b) b.onclick=()=>HouseStore.auth.signIn();
-  } else if(remote && state.authStatus==='not-allowed'){
-    S.innerHTML='<div class="banner"><b>'+esc(state.authEmail||'This account')+' isn’t on the House allowlist.</b> Ask whoever keeps the calendar to add you, then reload. '+
-      '<button class="btn" id="signout" style="margin-left:6px">Sign out</button></div>';
-    const b=$('signout'); if(b) b.onclick=()=>HouseStore.auth.signOut();
+    S.innerHTML='<div class="banner"><b>This is the House calendar.</b> Enter the house password to view and edit it.'+
+      '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">'+
+      '<input type="password" id="pw" placeholder="House password" autocomplete="current-password" '+
+        'style="flex:1 1 180px;max-width:280px;border:1px solid var(--rule-strong);background:var(--bg);border-radius:8px;padding:6px 9px;font-size:16px">'+
+      '<button class="btn btn-primary" id="signin">Enter</button></div>'+
+      '<span id="pwmsg" style="display:none;color:var(--t-dl);font-size:14px;margin-top:6px"></span></div>';
+    const go=()=>{
+      const pw=$('pw').value; const msg=$('pwmsg');
+      msg.style.display='none';
+      $('signin').textContent='Checking…';
+      HouseStore.auth.signIn(pw).catch(()=>{ msg.textContent='That password didn’t work. Try again.'; msg.style.display='block'; $('signin').textContent='Enter'; $('pw').select(); });
+    };
+    $('signin').onclick=go;
+    $('pw').onkeydown=e=>{ if(e.key==='Enter') go(); };
   } else if(state.canWrite===false){
     S.innerHTML='<div class="banner"><b>You can read this calendar but not write to it.</b> Use <b>+ Add</b> anyway — it will hand you the entry as text to send to whoever keeps the calendar.</div>';
   } else S.innerHTML='';

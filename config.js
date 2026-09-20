@@ -9,5 +9,10 @@
  */
 window.HOUSE_CONFIG = {
   supabaseUrl: '',   // e.g. 'https://abcd1234.supabase.co'
-  anonKey: ''        // the "anon / public" key
+  anonKey: '',       // the "anon / public" key
+
+  // Everyone shares ONE login. This is just its username — not a secret, safe to
+  // commit. Create a user with this exact email (and your house password) in the
+  // Supabase dashboard. The password is never stored in the repo.
+  houseEmail: 'house@calendar.local'
 };

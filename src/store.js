@@ -172,12 +172,12 @@
       status: 'loading',
       user: null,
       canWrite: false,
-      signIn: function () {
+      signIn: function (password) {
         return ready.then(function () {
-          return client.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.href.split('#')[0] }
-          });
+          return client.auth.signInWithPassword({
+            email: CFG.houseEmail || 'house@calendar.local',
+            password: password
+          }).then(function (res) { if (res.error) throw res.error; });
         });
       },
       signOut: function () {
@@ -216,16 +216,8 @@
       });
     }
 
-    // is_member() is a SECURITY DEFINER function that returns true when the
-    // signed-in email is on the allowlist. We use it only to choose which
-    // banner to show; RLS is what actually enforces access.
-    function refreshMembership() {
-      return client.rpc('is_member').then(function (res) {
-        var allowed = !res.error && res.data === true;
-        return allowed;
-      }).catch(function () { return false; });
-    }
-
+    // Any authenticated session means the house password was entered correctly;
+    // row-level security only lets authenticated users read or write.
     function onSession(session) {
       if (!session) {
         latest = [];
@@ -233,18 +225,9 @@
         dataSubs.emit(latest);
         return;
       }
-      var email = session.user && session.user.email;
-      refreshMembership().then(function (allowed) {
-        if (!allowed) {
-          latest = [];
-          setAuth({ status: 'not-allowed', user: { email: email }, canWrite: false });
-          dataSubs.emit(latest);
-          return;
-        }
-        setAuth({ status: 'ready', user: { email: email }, canWrite: true });
-        refetch().catch(function () {});
-        subscribeRealtime();
-      });
+      setAuth({ status: 'ready', user: { email: session.user && session.user.email }, canWrite: true });
+      refetch().catch(function () {});
+      subscribeRealtime();
     }
 
     var realtimeChannel = null;
@@ -269,9 +252,7 @@
 
     function requireWrite() {
       if (!auth.canWrite) {
-        var e = new Error(auth.status === 'not-allowed'
-          ? 'This account is not on the house allowlist.'
-          : 'Sign in with an allow-listed account to make changes.');
+        var e = new Error('Enter the house password to make changes.');
         e.code = 'not_allowed';
         return Promise.reject(e);
       }
