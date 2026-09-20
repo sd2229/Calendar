@@ -870,7 +870,7 @@ function collect(){
     link:$('f-link').value.trim(), notes:$('f-notes').value.trim(),
     unconfirmed:$('f-confirm').checked,
     endDate: state.editing?(state.editing.endDate||null):null,
-    updatedAt:new Date().toISOString()
+    updated_at:new Date().toISOString()
   };
 }
 function asText(o){
