@@ -54,7 +54,7 @@ Two implementations sit behind that interface, chosen at load time by
 | Backend    | When it's used                              | What it is |
 |------------|---------------------------------------------|------------|
 | **local**  | `config.js` has no Supabase values          | IndexedDB, cross-tab sync via `BroadcastChannel`, seeded from `events.json`. No sign-in. |
-| **remote** | `config.js` has a Supabase URL + anon key   | Supabase Postgres with realtime updates and Google sign-in, gated by an email allowlist. |
+| **remote** | `config.js` has a Supabase URL + anon key   | Supabase Postgres with realtime updates, behind one shared house-password login. |
 
 Nothing outside `store.js` references IndexedDB or Supabase. Swapping or adding
 a backend means editing that file and nothing else.
@@ -123,57 +123,48 @@ Events are flat objects. `events.json` is an array of them.
 
 ## Shared backend (Supabase)
 
-The remote backend gives the House one shared calendar with Google sign-in.
-Access is **members-only**: allow-listed, signed-in users can read and write;
-everyone else can do nothing. (The public, shareable projection is the
-token-gated `.ics` feed, not the database.)
+The remote backend gives the House one shared calendar behind a single shared
+password. Anyone with the password can read and write; anonymous visitors can
+do nothing. (The public, shareable projection is the token-gated `.ics` feed,
+not the database.)
 
 ### 1. Create the schema
 
 In a new Supabase project, run [`supabase/migrations/0001_init.sql`](supabase/migrations/0001_init.sql)
-— paste it into the SQL editor, or with the CLI:
+— paste it into the SQL editor (or `supabase db push`). It creates the `events`
+table, row-level-security policies (authenticated users read/write), and adds
+`events` to the realtime publication.
 
-```bash
-supabase db push
-```
+### 2. Load the events
 
-It creates the `events` table, the `allowed_emails` table, row-level-security
-policies, the `is_member()` helper, and adds `events` to the realtime
-publication.
+Paste [`supabase/seed.sql`](supabase/seed.sql) into the SQL editor and run it —
+that loads all 143 events, no tooling required. (Alternatively, with Node:
+`cp .env.example .env`, fill it in, then `npm run seed`.)
 
-### 2. Turn on Google sign-in
+### 3. Create the shared login
 
-In the Supabase dashboard: **Authentication → Providers → Google**, enable it,
-and paste in a Google OAuth client's ID and secret (Google Cloud Console →
-Credentials). Add your Supabase auth callback URL to the Google client's
-authorized redirect URIs, and add your site's URL under **Authentication → URL
-Configuration**.
+**Authentication → Users → Add user → Create new user**:
+- Email: `house@calendar.local` (must match `houseEmail` in `config.js`)
+- Password: the shared house password you'll give out
+- ✅ Auto Confirm User
 
-### 3. Seed the data and the allowlist
-
-```bash
-cp .env.example .env      # then fill in SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ALLOWED_EMAILS
-npm run seed              # upsert events.json + the allowlist
-# npm run seed:reset      # wipe events first, then load
-```
-
-`ALLOWED_EMAILS` is the comma-separated list of Google accounts that may sign in.
-Re-run `npm run seed` any time you change it. The service-role key is read
-server-side only and is never shipped to the browser.
+To change access later, reset that user's password and tell the House the new
+one. There is no per-person list.
 
 ### 4. Point the app at it
 
-Fill in [`config.js`](config.js) with your project's URL and **anon** key (both
-are safe to commit — RLS is what protects the data):
+Fill in [`config.js`](config.js) with your project's URL and **publishable**
+(anon) key — both are safe to commit; RLS is what protects the data:
 
 ```js
 window.HOUSE_CONFIG = {
   supabaseUrl: 'https://YOUR-PROJECT.supabase.co',
-  anonKey: 'your-anon-public-key'
+  anonKey: 'sb_publishable_...',      // or the legacy anon key
+  houseEmail: 'house@calendar.local'
 };
 ```
 
-Now the app uses the shared calendar and prompts for Google sign-in.
+Now the app talks to the shared calendar and asks for the house password.
 
 ---
 
@@ -234,8 +225,9 @@ src/store.js             the storage seam: local (IndexedDB) + remote (Supabase)
 events.json              143 seed events / current data
 api/calendar.js          /calendar.ics serverless function
 supabase/
-  migrations/0001_init.sql   schema, RLS, allowlist, realtime
-  seed.mjs                   loads events.json + allowlist via the service-role key
+  migrations/0001_init.sql   schema, RLS, realtime
+  seed.sql                   paste-in loader for all 143 events (no tooling)
+  seed.mjs                   optional Node loader for events.json
 vercel.json              static hosting + /calendar.ics route
 .env.example             server-side env template
 ```

@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 /* =============================================================================
- * supabase/seed.mjs — load events.json (and the email allowlist) into Supabase.
+ * supabase/seed.mjs — load events.json into Supabase.
  *
+ * Optional: most people just paste supabase/seed.sql into the Supabase SQL
+ * editor instead (no Node needed). This script does the same thing from Node.
  * No dependencies: uses Node's built-in fetch (Node 18+) against PostgREST with
- * the service-role key, which bypasses row-level security.
+ * the secret (service-role) key, which bypasses row-level security.
  *
  * Env (from the shell or a .env file next to this repo's root):
  *   SUPABASE_URL                 https://<project>.supabase.co
- *   SUPABASE_SERVICE_ROLE_KEY    the service_role key (NEVER shipped to a browser)
- *   ALLOWED_EMAILS               comma-separated Google emails allowed to sign in
+ *   SUPABASE_SERVICE_ROLE_KEY    the secret / service_role key (server-side only)
  *
  * Usage:
  *   node supabase/seed.mjs                # upsert everything from events.json
@@ -76,20 +77,6 @@ async function main() {
     });
     if (!res.ok) throw new Error(`upsert failed at ${i}: ${res.status} ${await res.text()}`);
     console.log(`Upserted ${Math.min(i + CHUNK, events.length)}/${events.length}`);
-  }
-
-  const allowed = (process.env.ALLOWED_EMAILS || '')
-    .split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-  if (allowed.length) {
-    const res = await rest('allowed_emails', {
-      method: 'POST',
-      headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
-      body: JSON.stringify(allowed.map(email => ({ email })))
-    });
-    if (!res.ok) throw new Error(`allowlist upsert failed: ${res.status} ${await res.text()}`);
-    console.log(`Allowlisted ${allowed.length} email(s): ${allowed.join(', ')}`);
-  } else {
-    console.log('No ALLOWED_EMAILS set — skipping allowlist (nobody can sign in yet).');
   }
 
   console.log('Done.');

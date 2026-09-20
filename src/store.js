@@ -15,9 +15,8 @@
  *
  * auth.status is one of:
  *   'loading'     first snapshot / session not resolved yet
- *   'signed-out'  remote backend, nobody signed in (calendar is members-only)
- *   'not-allowed' signed in with a Google account that is not on the allowlist
- *   'ready'       good to read; canWrite says whether writes will be accepted
+ *   'signed-out'  remote backend, house password not entered yet
+ *   'ready'       signed in; canWrite says whether writes will be accepted
  *
  * Backend selection: if window.HOUSE_CONFIG has a real Supabase url + anon key
  * we use the remote (shared) backend; otherwise we fall back to a local
@@ -156,10 +155,10 @@
   }
 
   /* =========================================================================
-   * REMOTE BACKEND — Supabase (Postgres + realtime + Google OAuth).
-   * The calendar is members-only: RLS lets allow-listed, signed-in users read
-   * and write, and nobody else do anything. The public projection is the
-   * separate token-gated .ics feed, not this table.
+   * REMOTE BACKEND — Supabase (Postgres + realtime + shared-password login).
+   * Everyone shares one login; RLS lets any signed-in user read and write, and
+   * nobody else do anything. The public projection is the separate token-gated
+   * .ics feed, not this table.
    * =======================================================================*/
   function RemoteStore() {
     var TABLE = 'events';
