@@ -1,0 +1,12 @@
+{
+  "name": "telluride-house-calendar",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Ultimate House Calendar for the Cornell Branch of the Telluride Association",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "seed": "node supabase/seed.mjs",
+    "seed:reset": "node supabase/seed.mjs --reset"
+  }
+}

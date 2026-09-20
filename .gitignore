@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# secrets & local env
+.env
+.env.local
+allowed_emails.json
+
+# vercel
+.vercel/
+
+# editor / OS / tooling
+.claude/
+.DS_Store
+Thumbs.db
+*.log
