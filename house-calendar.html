@@ -166,6 +166,22 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
 .rule p{margin:0;font-size:14.5px;color:var(--ink-2)}
 .cite{font-family:var(--fs-m);font-size:9.5px;color:var(--muted);letter-spacing:.05em;margin-top:5px;display:block;text-transform:uppercase}
 
+/* ---------- sections: forms & guests ---------- */
+.calnav{display:flex;gap:10px 18px;align-items:baseline;flex-wrap:wrap}
+.trackgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;margin-top:12px}
+.trackcard{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--rule-strong);border-radius:0 10px 10px 0;padding:12px 14px;display:flex;flex-direction:column;gap:5px}
+.trackcard.done{opacity:.55}
+.trackcard .tc-main{text-align:left;background:none;border:0;padding:0;cursor:pointer;font:inherit;color:inherit;width:100%}
+.trackcard h4{font-size:17px;font-weight:600}
+.trackcard.done h4{text-decoration:line-through}
+.tc-meta{font-size:13px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 9px;align-items:center;margin-top:3px}
+.tc-note{font-size:14px;color:var(--ink-2);margin:5px 0 0}
+.tc-acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:6px}
+.pill{font-family:var(--fs-m);font-size:9px;letter-spacing:.09em;text-transform:uppercase;font-weight:600;border:1px solid var(--rule-strong);border-radius:5px;padding:1px 6px;color:var(--ink-2)}
+.pill.due{color:var(--t-dl);border-color:var(--t-dl)}
+.btn-sm{padding:3px 10px;font-size:13px}
+.section-empty{color:var(--muted);font-size:15px;font-style:italic;padding:6px 0 2px}
+
 /* ---------- drawer & modal ---------- */
 .scrim{position:fixed;inset:0;background:rgba(20,14,8,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .16s}
 .scrim.on{opacity:1;pointer-events:auto}
@@ -306,21 +322,28 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
       <span class="kicker lab">Cornell Branch of the Telluride Association</span>
       <span class="wordmark">The <em>Ultimate</em> House Calendar</span>
     </div>
-    <div class="mast-spacer"></div>
-    <div class="tabs" role="tablist" id="tabs">
-      <button role="tab" data-view="day" aria-selected="false">Day</button>
-      <button role="tab" data-view="month" aria-selected="true">Month</button>
-      <button role="tab" data-view="agenda" aria-selected="false">Agenda</button>
-      <button role="tab" data-view="term" aria-selected="false">Term</button>
+    <div class="tabs" role="tablist" id="sections">
+      <button role="tab" data-section="calendar" aria-selected="true">Calendar</button>
+      <button role="tab" data-section="forms" aria-selected="false">Forms</button>
+      <button role="tab" data-section="guests" aria-selected="false">Guests</button>
     </div>
-    <div class="navbar">
-      <button class="navbtn" id="prev" aria-label="Previous">&#8592;</button>
-      <span class="period" id="period">&mdash;</span>
-      <button class="navbtn" id="next" aria-label="Next">&#8594;</button>
-      <button class="btn" id="today">Today</button>
-      <button class="navbtn" id="tv" aria-label="Present on a screen" title="Present (F)">
-        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5V1.5H5M10 1.5h3.5V5M13.5 10v3.5H10M5 13.5H1.5V10"/></svg>
-      </button>
+    <div class="mast-spacer"></div>
+    <div class="calnav" id="calnav">
+      <div class="tabs" role="tablist" id="tabs">
+        <button role="tab" data-view="day" aria-selected="false">Day</button>
+        <button role="tab" data-view="month" aria-selected="true">Month</button>
+        <button role="tab" data-view="agenda" aria-selected="false">Agenda</button>
+        <button role="tab" data-view="term" aria-selected="false">Term</button>
+      </div>
+      <div class="navbar">
+        <button class="navbtn" id="prev" aria-label="Previous">&#8592;</button>
+        <span class="period" id="period">&mdash;</span>
+        <button class="navbtn" id="next" aria-label="Next">&#8594;</button>
+        <button class="btn" id="today">Today</button>
+        <button class="navbtn" id="tv" aria-label="Present on a screen" title="Present (F)">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 5V1.5H5M10 1.5h3.5V5M13.5 10v3.5H10M5 13.5H1.5V10"/></svg>
+        </button>
+      </div>
     </div>
     <button class="btn btn-primary" id="add">+ Add</button>
   </div>
@@ -333,7 +356,7 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
 
   <section class="tray" id="tray"></section>
 
-  <section class="rules">
+  <section class="rules" id="rules">
     <div class="sec-h">
       <h2>Standing rules</h2>
       <p>Clocks the House already agreed to.</p>
@@ -393,8 +416,8 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
     <div class="row2">
       <div class="field"><label for="f-where">Where</label><input id="f-where" name="where" placeholder="Dutch / Library / Bartels"></div>
       <div class="field" id="wrap-host">
-        <label for="f-host">Hosted</label>
-        <select id="f-host" name="host"><option value="">&mdash;</option><option value="house">In the House</option><option value="external">Somewhere else</option></select>
+        <label for="f-host">Who's hosting</label>
+        <select id="f-host" name="host"><option value="">&mdash;</option><option value="member">A housemember, in the House</option><option value="house">The House, for everyone</option></select>
       </div>
     </div>
     <div class="field"><label for="f-link">Link (agenda, form, RSVP)</label><input id="f-link" name="link" placeholder="https://"></div>
@@ -406,6 +429,54 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
     <button class="btn btn-primary" id="save">Save</button>
     <button class="btn" id="cancel">Cancel</button>
     <button class="btn btn-danger" id="delete" hidden>Delete</button>
+  </div>
+</div>
+
+<div class="modal" id="fmodal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="panel-h">
+    <div><span class="sub" id="fm-sub">New form</span><h3 id="fm-title">Add a form</h3></div>
+    <button class="x" id="fmodal-x" aria-label="Close">&times;</button>
+  </div>
+  <form class="form" id="fform">
+    <div class="field"><label for="fm-name">What is it</label><input id="fm-name" required placeholder="NAG HAG — House & Grounds request"></div>
+    <div class="row2">
+      <div class="field"><label for="fm-cat">Kind</label>
+        <select id="fm-cat"><option value="standing">Always open</option><option value="deadline">Has a deadline</option></select>
+      </div>
+      <div class="field"><label for="fm-committee">Committee</label><select id="fm-committee"></select></div>
+    </div>
+    <div class="field" id="fm-duewrap"><label for="fm-due">Due</label><input type="date" id="fm-due"></div>
+    <div class="field"><label for="fm-link">Link to the form</label><input id="fm-link" placeholder="https://forms.gle/…"></div>
+    <div class="field"><label for="fm-notes">Notes</label><textarea id="fm-notes" placeholder="What it's for."></textarea></div>
+    <label class="checkline"><input type="checkbox" id="fm-done"> Done / no longer needed</label>
+    <div id="fform-msg"></div>
+  </form>
+  <div class="panel-f">
+    <button class="btn btn-primary" id="fsave">Save</button>
+    <button class="btn" id="fcancel">Cancel</button>
+    <button class="btn btn-danger" id="fdelete" hidden>Delete</button>
+  </div>
+</div>
+
+<div class="modal" id="gmodal" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="panel-h">
+    <div><span class="sub" id="gm-sub">New guest</span><h3 id="gm-title">Add a guest</h3></div>
+    <button class="x" id="gmodal-x" aria-label="Close">&times;</button>
+  </div>
+  <form class="form" id="gform">
+    <div class="field"><label for="gm-name">Guest's name</label><input id="gm-name" required placeholder="Who's visiting"></div>
+    <div class="field"><label for="gm-host">Hosted by</label><input id="gm-host" placeholder="Which housemember"></div>
+    <div class="row2">
+      <div class="field"><label for="gm-arrive">Arrives</label><input type="date" id="gm-arrive"></div>
+      <div class="field"><label for="gm-depart">Leaves</label><input type="date" id="gm-depart"></div>
+    </div>
+    <div class="field"><label for="gm-notes">Notes</label><textarea id="gm-notes" placeholder="Anything the House should know."></textarea></div>
+    <div id="gform-msg"></div>
+  </form>
+  <div class="panel-f">
+    <button class="btn btn-primary" id="gsave">Save</button>
+    <button class="btn" id="gcancel">Cancel</button>
+    <button class="btn btn-danger" id="gdelete" hidden>Delete</button>
   </div>
 </div>
 
@@ -484,6 +555,7 @@ function fmtTime(t){if(!t)return'';let[h,m]=t.split(':').map(Number);const ap=h>
 function fmtRange(a,b){if(!a)return'';return fmtTime(a)+(b?'–'+fmtTime(b):'');}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function uid(){return 'e'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function hostLabel(h){return h==='member'?'Member-hosted':h==='house'?'House-hosted':h==='external'?'Elsewhere':'';}
 
 /* ============================ data ============================ */
 /* Events now live behind src/store.js (IndexedDB locally, Supabase when
@@ -491,11 +563,13 @@ function uid(){return 'e'+Date.now().toString(36)+Math.random().toString(36).sli
    state and fills in when the store delivers its first snapshot. */
 /* ============================ state ============================ */
 const state={
+  section:'calendar',
   view:'month',
   cursor:new Date(new Date().getFullYear(),new Date().getMonth(),1,12),
   day:new Date(new Date().getFullYear(),new Date().getMonth(),new Date().getDate(),12),
-  events:[], filters:new Set(TRACK_KEYS), showBdays:true, showAcademic:true,
-  committee:'', host:'', canWrite:true, authStatus:'loading', authEmail:null, editing:null
+  events:[], forms:[], guests:[], filters:new Set(TRACK_KEYS), showBdays:true, showAcademic:true,
+  committee:'', host:'', canWrite:true, authStatus:'loading', authEmail:null,
+  editing:null, editingForm:null, editingGuest:null
 };
 
 /* ============================ recurrence ============================ */
@@ -588,9 +662,9 @@ function renderLegend(){
   h+='<span class="legend-sep"></span>';
   h+='<span class="selwrap"><label for="cfilter">Committee</label><select class="mini" id="cfilter"><option value="">All</option>'+
      COMMITTEES.map(c=>'<option value="'+c[0]+'"'+(state.committee===c[0]?' selected':'')+'>'+esc(CSHORT[c[0]])+'</option>').join('')+'</select></span>';
-  h+='<span class="selwrap"><label for="hfilter">Socials</label><select class="mini" id="hfilter"><option value="">Both</option>'+
-     '<option value="house"'+(state.host==='house'?' selected':'')+'>In the House</option>'+
-     '<option value="external"'+(state.host==='external'?' selected':'')+'>Elsewhere</option></select></span>';
+  h+='<span class="selwrap"><label for="hfilter">Socials</label><select class="mini" id="hfilter"><option value="">All</option>'+
+     '<option value="member"'+(state.host==='member'?' selected':'')+'>Member-hosted</option>'+
+     '<option value="house"'+(state.host==='house'?' selected':'')+'>House-hosted</option></select></span>';
   L.innerHTML=h;
   L.querySelectorAll('[data-track]').forEach(b=>b.onclick=()=>{
     const k=b.dataset.track; state.filters.has(k)?state.filters.delete(k):state.filters.add(k); renderLegend(); render();
@@ -605,6 +679,14 @@ function renderLegend(){
 
 /* ============================ views ============================ */
 function render(){
+  document.getElementById('sections').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.section===state.section)));
+  const cal = state.section==='calendar';
+  $('calnav').style.display = cal?'':'none';
+  $('legend').style.display = cal?'':'none';
+  $('tray').style.display = cal?'':'none';
+  $('rules').style.display = cal?'':'none';
+  if(state.section==='forms'){ renderForms(); renderStatus(); return; }
+  if(state.section==='guests'){ renderGuests(); renderStatus(); return; }
   BRK=breakDays();
   document.getElementById('tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.view===state.view)));
   ({day:renderDay,month:renderMonth,agenda:renderAgenda,term:renderTerm}[state.view])();
@@ -629,7 +711,7 @@ function renderDay(){
     const t=TRACKS[e.track];
     let meta='<span class="tag">'+glyphSVG(t.glyph,t.color)+esc(t.short)+'</span>';
     if(e.committee) meta+='<span class="tag">'+esc(CSHORT[e.committee]||e.committee)+'</span>';
-    if(e.host) meta+='<span class="tag">'+(e.host==='house'?'In the House':'Elsewhere')+'</span>';
+    if(e.host) meta+='<span class="tag">'+esc(hostLabel(e.host))+'</span>';
     if(e.where) meta+='<span>'+esc(e.where)+'</span>';
     if(e.unconfirmed) meta+='<span class="tag warn">Unconfirmed</span>';
     items+='<button class="ditem" data-ev="'+e.id+'"><span class="when">'+esc(e.start?fmtRange(e.start,e.end):'all day')+'</span>'+
@@ -683,7 +765,7 @@ function renderAgenda(){
       const t=TRACKS[e.track];
       let meta='<span class="tag">'+glyphSVG(t.glyph,t.color)+esc(t.short)+'</span>';
       if(e.committee) meta+='<span class="tag">'+esc(CSHORT[e.committee]||e.committee)+'</span>';
-      if(e.host) meta+='<span class="tag">'+(e.host==='house'?'In the House':'Elsewhere')+'</span>';
+      if(e.host) meta+='<span class="tag">'+esc(hostLabel(e.host))+'</span>';
       if(e.start) meta+='<span class="mono">'+esc(fmtRange(e.start,e.end))+'</span>';
       if(e.where) meta+='<span>'+esc(e.where)+'</span>';
       if(e.unconfirmed) meta+='<span class="tag warn">Unconfirmed</span>';
@@ -816,7 +898,9 @@ function closePanel(){$('panel').classList.remove('on');$('panel').setAttribute(
 /* ============================ form ============================ */
 function fillSelects(){
   $('f-track').innerHTML=TRACK_KEYS.map(k=>'<option value="'+k+'">'+esc(TRACKS[k].name)+'</option>').join('')+'<option value="bday">Birthday</option>';
-  $('f-committee').innerHTML='<option value="">&mdash;</option>'+COMMITTEES.map(c=>'<option value="'+c[0]+'">'+esc(CSHORT[c[0]])+'</option>').join('');
+  const cttees='<option value="">&mdash;</option>'+COMMITTEES.map(c=>'<option value="'+c[0]+'">'+esc(CSHORT[c[0]])+'</option>').join('');
+  $('f-committee').innerHTML=cttees;
+  $('fm-committee').innerHTML=cttees;
 }
 function syncFormBits(){
   const tr=$('f-track').value;
@@ -894,7 +978,7 @@ async function save(){
   const o=collect();
   if(!o.title){$('f-title').focus();return;}
   if(!state.canWrite){ offerText(o,'Not saved — you have read access to this calendar, not write access.'); return; }
-  try{ await HouseStore.put(o); closeForm(); }
+  try{ await HouseStore.events.put(o); closeForm(); }
   catch(err){
     if(err&&err.code==='not_allowed'){ state.canWrite=false; renderStatus(); offerText(o,'Not saved — you have read access to this calendar, not write access.'); }
     else offerText(o,'Not saved — '+((err&&err.message)||'something went wrong on the way to the calendar')+'.');
@@ -902,8 +986,145 @@ async function save(){
 }
 async function removeEvent(){
   if(!state.editing) return;
-  if(state.canWrite){ try{ await HouseStore.remove(state.editing.id); }catch(e){} }
+  if(state.canWrite){ try{ await HouseStore.events.remove(state.editing.id); }catch(e){} }
   closeForm();
+}
+
+/* ============================ forms & guests ============================ */
+function byIdIn(arr,id){return arr.find(x=>x.id===id);}
+function openModal(id){$(id).classList.add('on');$(id).setAttribute('aria-hidden','false');$('scrim').classList.add('on');}
+function anyOpen(){return ['modal','fmodal','gmodal','panel'].some(i=>$(i).classList.contains('on'));}
+function closeModal(id){$(id).classList.remove('on');$(id).setAttribute('aria-hidden','true');if(!anyOpen())$('scrim').classList.remove('on');}
+function fmtDue(d){if(!d)return'';const dt=D(d);return MONTHS[dt.getMonth()].slice(0,3)+' '+dt.getDate();}
+
+/* ---- forms tracker ---- */
+function formCard(f){
+  const done=f.status==='done';
+  let meta='';
+  if(f.committee) meta+='<span class="pill">'+esc(CSHORT[f.committee]||f.committee)+'</span>';
+  if(f.category==='deadline') meta+='<span class="pill due">'+(f.due?'Due '+esc(fmtDue(f.due)):'No date yet')+'</span>';
+  else meta+='<span class="pill">Always open</span>';
+  let acts='';
+  if(f.link) acts+='<a class="btn btn-primary btn-sm" href="'+esc(f.link)+'" target="_blank" rel="noopener">Open form ↗</a>';
+  acts+='<button class="btn btn-sm" data-editform="'+f.id+'">Edit</button>';
+  acts+='<button class="btn btn-sm" data-doneform="'+f.id+'">'+(done?'Reopen':'Done')+'</button>';
+  return '<div class="trackcard'+(done?' done':'')+'" style="border-left-color:var(--accent)">'+
+    '<button class="tc-main" data-editform="'+f.id+'"><h4>'+esc(f.title)+'</h4>'+
+    '<div class="tc-meta">'+meta+'</div>'+(f.notes?'<p class="tc-note">'+esc(f.notes)+'</p>':'')+'</button>'+
+    '<div class="tc-acts">'+acts+'</div></div>';
+}
+function renderForms(){
+  const V=$('view');
+  const open=state.forms.filter(f=>f.status!=='done');
+  const standing=open.filter(f=>f.category!=='deadline').sort((a,b)=>a.title.localeCompare(b.title));
+  const deadline=open.filter(f=>f.category==='deadline').sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999')||a.title.localeCompare(b.title));
+  const done=state.forms.filter(f=>f.status==='done');
+  let h='<div class="sec-h" style="margin-top:6px"><h2>Always open</h2><p>Standing forms — fill any time.</p></div>';
+  h+=standing.length?'<div class="trackgrid">'+standing.map(formCard).join('')+'</div>':'<p class="section-empty">None yet.</p>';
+  h+='<div class="sec-h" style="margin-top:26px"><h2>Due dates</h2><p>Forms and to-dos with a deadline.</p></div>';
+  h+=deadline.length?'<div class="trackgrid">'+deadline.map(formCard).join('')+'</div>':'<p class="section-empty">Nothing due.</p>';
+  if(done.length) h+='<div class="sec-h" style="margin-top:26px"><h2>Done</h2></div><div class="trackgrid">'+done.map(formCard).join('')+'</div>';
+  V.innerHTML=h;
+  V.querySelectorAll('[data-editform]').forEach(b=>b.onclick=()=>openFormEditor(byIdIn(state.forms,b.dataset.editform)));
+  V.querySelectorAll('[data-doneform]').forEach(b=>b.onclick=()=>toggleFormDone(b.dataset.doneform));
+}
+async function toggleFormDone(id){
+  const f=byIdIn(state.forms,id); if(!f||!state.canWrite) return;
+  try{ await HouseStore.forms.put(Object.assign({},f,{status:f.status==='done'?'open':'done',updated_at:new Date().toISOString()})); }catch(e){}
+}
+function syncFormEditor(){ $('fm-duewrap').style.display=$('fm-cat').value==='deadline'?'':'none'; }
+function openFormEditor(f){
+  state.editingForm=f||null;
+  $('fm-sub').textContent=f?'Edit form':'New form';
+  $('fm-title').textContent=f?'Edit form':'Add a form';
+  $('fm-name').value=f?(f.title||''):'';
+  $('fm-cat').value=f?(f.category||'standing'):'standing';
+  $('fm-committee').value=f?(f.committee||''):'';
+  $('fm-due').value=f?(f.due||''):'';
+  $('fm-link').value=f?(f.link||''):'';
+  $('fm-notes').value=f?(f.notes||''):'';
+  $('fm-done').checked=f?f.status==='done':false;
+  $('fdelete').hidden=!f;
+  $('fform-msg').innerHTML='';
+  syncFormEditor();
+  openModal('fmodal');
+}
+function closeFormEditor(){ closeModal('fmodal'); state.editingForm=null; }
+async function saveForm(){
+  const title=$('fm-name').value.trim();
+  if(!title){$('fm-name').focus();return;}
+  if(!state.canWrite){ $('fform-msg').innerHTML='<div class="banner"><b>Enter the house password to save.</b></div>'; return; }
+  const cat=$('fm-cat').value;
+  const o={ id: state.editingForm?state.editingForm.id:('f'+uid()), title, category:cat,
+    committee:$('fm-committee').value, link:$('fm-link').value.trim(),
+    due: cat==='deadline'?($('fm-due').value||null):null,
+    notes:$('fm-notes').value.trim(), status:$('fm-done').checked?'done':'open',
+    updated_at:new Date().toISOString() };
+  try{ await HouseStore.forms.put(o); closeFormEditor(); }
+  catch(err){ $('fform-msg').innerHTML='<div class="banner"><b>Not saved — '+esc((err&&err.message)||'something went wrong')+'.</b></div>'; }
+}
+async function removeForm(){
+  if(!state.editingForm) return;
+  if(state.canWrite){ try{ await HouseStore.forms.remove(state.editingForm.id); }catch(e){} }
+  closeFormEditor();
+}
+
+/* ---- guests ---- */
+function guestStay(g){
+  if(g.arrival&&g.departure){ return fmtDue(g.arrival)+' – '+fmtDue(g.departure); }
+  if(g.arrival) return 'From '+fmtDue(g.arrival);
+  if(g.departure) return 'Until '+fmtDue(g.departure);
+  return 'Dates TBD';
+}
+function guestCard(g){
+  let meta='<span class="pill">'+esc(guestStay(g))+'</span>';
+  if(g.host) meta+='<span class="tc-meta" style="margin:0">hosted by '+esc(g.host)+'</span>';
+  return '<div class="trackcard" style="border-left-color:var(--t-soc)">'+
+    '<button class="tc-main" data-editguest="'+g.id+'"><h4>'+esc(g.name||'Guest')+'</h4>'+
+    '<div class="tc-meta">'+meta+'</div>'+(g.notes?'<p class="tc-note">'+esc(g.notes)+'</p>':'')+'</button>'+
+    '<div class="tc-acts"><button class="btn btn-sm" data-editguest="'+g.id+'">Edit</button></div></div>';
+}
+function renderGuests(){
+  const V=$('view');
+  const tk=todayKey();
+  const guests=[...state.guests];
+  const upcomingOrNow=guests.filter(g=>!g.departure||g.departure>=tk).sort((a,b)=>(a.arrival||'9999').localeCompare(b.arrival||'9999'));
+  const past=guests.filter(g=>g.departure&&g.departure<tk).sort((a,b)=>(b.departure||'').localeCompare(a.departure||''));
+  let h='<div class="sec-h" style="margin-top:6px"><h2>Guests</h2><p>Who’s staying at the House, and who’s hosting them.</p></div>';
+  h+=upcomingOrNow.length?'<div class="trackgrid">'+upcomingOrNow.map(guestCard).join('')+'</div>':'<p class="section-empty">No guests logged. Use <b>+ Add</b>.</p>';
+  if(past.length) h+='<div class="sec-h" style="margin-top:26px"><h2>Past</h2></div><div class="trackgrid">'+past.map(guestCard).join('')+'</div>';
+  V.innerHTML=h;
+  V.querySelectorAll('[data-editguest]').forEach(b=>b.onclick=()=>openGuestEditor(byIdIn(state.guests,b.dataset.editguest)));
+}
+function openGuestEditor(g){
+  state.editingGuest=g||null;
+  $('gm-sub').textContent=g?'Edit guest':'New guest';
+  $('gm-title').textContent=g?'Edit guest':'Add a guest';
+  $('gm-name').value=g?(g.name||''):'';
+  $('gm-host').value=g?(g.host||''):'';
+  $('gm-arrive').value=g?(g.arrival||''):'';
+  $('gm-depart').value=g?(g.departure||''):'';
+  $('gm-notes').value=g?(g.notes||''):'';
+  $('gdelete').hidden=!g;
+  $('gform-msg').innerHTML='';
+  openModal('gmodal');
+}
+function closeGuestEditor(){ closeModal('gmodal'); state.editingGuest=null; }
+async function saveGuest(){
+  const name=$('gm-name').value.trim();
+  if(!name){$('gm-name').focus();return;}
+  if(!state.canWrite){ $('gform-msg').innerHTML='<div class="banner"><b>Enter the house password to save.</b></div>'; return; }
+  const o={ id: state.editingGuest?state.editingGuest.id:('g'+uid()), name,
+    host:$('gm-host').value.trim(), arrival:$('gm-arrive').value||null,
+    departure:$('gm-depart').value||null, notes:$('gm-notes').value.trim(),
+    updated_at:new Date().toISOString() };
+  try{ await HouseStore.guests.put(o); closeGuestEditor(); }
+  catch(err){ $('gform-msg').innerHTML='<div class="banner"><b>Not saved — '+esc((err&&err.message)||'something went wrong')+'.</b></div>'; }
+}
+async function removeGuest(){
+  if(!state.editingGuest) return;
+  if(state.canWrite){ try{ await HouseStore.guests.remove(state.editingGuest.id); }catch(e){} }
+  closeGuestEditor();
 }
 
 /* ============================ wiring ============================ */
@@ -930,18 +1151,30 @@ $('next').onclick=()=>shift(1);
 $('today').onclick=goToday;
 $('tv').onclick=toggleTV;
 $('tabs').onclick=e=>{const b=e.target.closest('button'); if(!b)return; state.view=b.dataset.view; render();};
-$('add').onclick=()=>openForm(null,state.view==='day'?key(state.day):'');
+$('sections').onclick=e=>{const b=e.target.closest('button'); if(!b)return; state.section=b.dataset.section; render();};
+$('add').onclick=()=>{
+  if(state.section==='forms') return openFormEditor(null);
+  if(state.section==='guests') return openGuestEditor(null);
+  openForm(null,state.view==='day'?key(state.day):'');
+};
 $('panel-x').onclick=closePanel;
 $('modal-x').onclick=closeForm;
 $('cancel').onclick=closeForm;
 $('save').onclick=save;
 $('delete').onclick=removeEvent;
-$('scrim').onclick=()=>{closeForm();closePanel();};
 $('f-track').onchange=syncFormBits;
 $('form').onsubmit=e=>{e.preventDefault();save();};
+$('fmodal-x').onclick=closeFormEditor; $('fcancel').onclick=closeFormEditor;
+$('fsave').onclick=saveForm; $('fdelete').onclick=removeForm;
+$('fm-cat').onchange=syncFormEditor;
+$('fform').onsubmit=e=>{e.preventDefault();saveForm();};
+$('gmodal-x').onclick=closeGuestEditor; $('gcancel').onclick=closeGuestEditor;
+$('gsave').onclick=saveGuest; $('gdelete').onclick=removeGuest;
+$('gform').onsubmit=e=>{e.preventDefault();saveGuest();};
+$('scrim').onclick=()=>{closeForm();closeFormEditor();closeGuestEditor();closePanel();};
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){closeForm();closePanel();return;}
-  if($('modal').classList.contains('on')||$('panel').classList.contains('on')) return;
+  if(e.key==='Escape'){closeForm();closeFormEditor();closeGuestEditor();closePanel();return;}
+  if(anyOpen()) return;
   if(e.target&&/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName)) return;
   if(e.key==='f'||e.key==='F') toggleTV();
   else if(e.key==='ArrowLeft') shift(-1);
@@ -968,10 +1201,12 @@ HouseStore.auth.onChange(a=>{
   state.canWrite   = a.canWrite;
   renderStatus();
 });
-HouseStore.subscribe(rows=>{
+HouseStore.events.subscribe(rows=>{
   state.events = rows;
   // In local mode there is no sign-in, so the first snapshot means we're ready.
   if(HouseStore.mode==='local' && state.authStatus==='loading') state.authStatus='ready';
   render();
 });
+HouseStore.forms.subscribe(rows=>{ state.forms = rows; render(); });
+HouseStore.guests.subscribe(rows=>{ state.guests = rows; render(); });
 </script>

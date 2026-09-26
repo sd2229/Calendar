@@ -1,0 +1,52 @@
+[
+  {
+    "id": "form-naghag",
+    "title": "NAG HAG — House & Grounds request",
+    "category": "standing",
+    "committee": "hag",
+    "link": "",
+    "due": null,
+    "notes": "Ask House & Grounds for something you need.",
+    "status": "open"
+  },
+  {
+    "id": "form-maintenance",
+    "title": "Maintenance request",
+    "category": "standing",
+    "committee": "hag",
+    "link": "",
+    "due": null,
+    "notes": "Something in the House is broken or needs fixing.",
+    "status": "open"
+  },
+  {
+    "id": "form-guest",
+    "title": "Guest request",
+    "category": "standing",
+    "committee": "rgc",
+    "link": "",
+    "due": null,
+    "notes": "Requesting to host a guest. Also log them under the Guests tab.",
+    "status": "open"
+  },
+  {
+    "id": "form-headshots",
+    "title": "Headshots & bios",
+    "category": "deadline",
+    "committee": "commscom",
+    "link": "",
+    "due": null,
+    "notes": "For the website. Set a due date once CommsCom picks one.",
+    "status": "open"
+  },
+  {
+    "id": "form-socialspitch",
+    "title": "Socials pitch",
+    "category": "deadline",
+    "committee": "socialcom",
+    "link": "",
+    "due": null,
+    "notes": "Pitch a social you want the House to run.",
+    "status": "open"
+  }
+]

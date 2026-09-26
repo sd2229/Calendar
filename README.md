@@ -218,14 +218,16 @@ same break-skipping rule as the app, all in `America/New_York`.
 ## Layout
 
 ```
-house-calendar.html      the app (loads config.js, then src/store.js)
+house-calendar.html      the app: Calendar · Forms · Guests (loads config.js, then src/store.js)
 house.jpg                background photo of the House
 config.js                front-end backend selection (public values)
 src/store.js             the storage seam: local (IndexedDB) + remote (Supabase)
 events.json              143 seed events / current data
+forms.json               seed for the Forms tracker (standing + deadline forms)
 api/calendar.js          /calendar.ics serverless function
 supabase/
-  migrations/0001_init.sql   schema, RLS, realtime
+  migrations/0001_init.sql   events schema, RLS, realtime
+  migrations/0002_forms_guests.sql  forms + guests tables, RLS, realtime, form seed
   seed.sql                   paste-in loader for all 143 events (no tooling)
   seed.mjs                   optional Node loader for events.json
 vercel.json              static hosting + /calendar.ics route
