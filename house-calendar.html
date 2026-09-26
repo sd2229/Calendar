@@ -3,7 +3,7 @@
 <title>Telly Cally</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Fraunces:opsz,wght@9..144,700;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
 :root{
   --bg:#F3EADB; --surface:rgba(252,248,240,.72); --surface-2:rgba(243,234,217,.76); --ink:#241B11; --ink-2:#5C4B37;
@@ -54,8 +54,7 @@ a{color:inherit}
 /* ---------- masthead ---------- */
 .mast{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
 .mast-in{max-width:1280px;margin:0 auto;padding:13px 16px 10px;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:baseline}
-.wordmark{font-size:29px;font-weight:600;letter-spacing:-.005em;line-height:1}
-.wordmark em{font-style:italic;font-weight:500;color:var(--accent)}
+.wordmark{font-family:'Fraunces','EB Garamond',Georgia,serif;font-size:31px;font-weight:900;color:var(--accent);letter-spacing:-.015em;line-height:1;font-optical-sizing:auto}
 .kicker{color:var(--muted);display:block;margin-bottom:5px}
 .mast-spacer{flex:1 1 30px}
 .tabs{display:flex;gap:2px;background:var(--surface-2);border:1px solid var(--rule);border-radius:999px;padding:3px}
@@ -314,7 +313,7 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
   <div class="mast-in">
     <div>
       <span class="kicker lab">Cornell Branch of the Telluride Association</span>
-      <span class="wordmark">Telly <em>Cally</em></span>
+      <span class="wordmark">Telly Cally</span>
     </div>
     <div class="tabs" role="tablist" id="sections">
       <button role="tab" data-section="calendar" aria-selected="true">Calendar</button>
