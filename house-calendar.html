@@ -12,7 +12,7 @@
   --house-photo:url('house.jpg'); --house-draw:none; --house-scrim:.80;
   --shadow:0 1px 2px rgba(36,27,17,.07),0 10px 30px -14px rgba(36,27,17,.28);
   --t-hm:#2a78d6; --t-cm:#eb6834; --t-forum:#1baf7a; --t-pref:#eda100;
-  --t-soc:#e87ba4; --t-kitchen:#008300; --t-world:#4a3aa7; --t-dl:#e34948;
+  --t-soc:#e87ba4; --t-kitchen:#008300; --t-world:#4a3aa7; --t-dl:#e34948; --t-chef:#b5539c;
   --break-wash:rgba(193,85,27,.11);
   --fs-d:'EB Garamond',Garamond,Georgia,'Times New Roman',serif;
   --fs-m:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
@@ -23,7 +23,7 @@
   --green:#7FB38F; --house:#E0A867; --house-op:.30;
   --shadow:0 1px 2px rgba(0,0,0,.55),0 10px 30px -14px rgba(0,0,0,.75);
   --t-hm:#3987e5; --t-cm:#d95926; --t-forum:#199e70; --t-pref:#c98500;
-  --t-soc:#d55181; --t-kitchen:#008300; --t-world:#9085e9; --t-dl:#e66767;
+  --t-soc:#d55181; --t-kitchen:#008300; --t-world:#9085e9; --t-dl:#e66767; --t-chef:#cd77b4;
   --break-wash:rgba(232,132,63,.13);
 }}
 :root[data-theme="dark"]{
@@ -32,7 +32,7 @@
   --green:#7FB38F; --house:#E0A867; --house-op:.30;
   --shadow:0 1px 2px rgba(0,0,0,.55),0 10px 30px -14px rgba(0,0,0,.75);
   --t-hm:#3987e5; --t-cm:#d95926; --t-forum:#199e70; --t-pref:#c98500;
-  --t-soc:#d55181; --t-kitchen:#008300; --t-world:#9085e9; --t-dl:#e66767;
+  --t-soc:#d55181; --t-kitchen:#008300; --t-world:#9085e9; --t-dl:#e66767; --t-chef:#cd77b4;
   --break-wash:rgba(232,132,63,.13);
 }
 *{box-sizing:border-box}
@@ -473,7 +473,8 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
 const TRACKS = {
   hm:      {name:'Housemeeting', short:'HM',     color:'var(--t-hm)',      glyph:'gavel', blurb:'The weekly meeting and everything that belongs to it.'},
   cm:      {name:'Committees',   short:'Com',    color:'var(--t-cm)',      glyph:'grid',  blurb:'Eighteen committees, each with its own slot.'},
-  forum:   {name:'PubSpeaks & CHEFs', short:'Speak', color:'var(--t-forum)', glyph:'speak', blurb:'PubSpeaks, CHEFs, faculty lectures, Faculty Dinner, TAWP.'},
+  forum:   {name:'PubSpeaks',    short:'Speak',  color:'var(--t-forum)',   glyph:'speak', blurb:'PubSpeaks, faculty lectures, Faculty Dinner, TAWP.'},
+  chef:    {name:'CHEFs',        short:'CHEF',   color:'var(--t-chef)',    glyph:'chef',  blurb:'CHEFs — the House’s discussion format.'},
   pref:    {name:'Preferment',   short:'Prefer', color:'var(--t-pref)',    glyph:'key',   blurb:'Open houses, readings, cuts, interviews.'},
   soc:     {name:'Socials',      short:'Social', color:'var(--t-soc)',     glyph:'glass', blurb:'House-hosted and elsewhere.'},
   kitchen: {name:'Kitchen & Upkeep', short:'House', color:'var(--t-kitchen)', glyph:'pot', blurb:'Kitchen shifts, cleaning, lock-up, guests.'},
@@ -491,7 +492,8 @@ const GLYPHS = {
   star:'<path d="M6.5 1.8l1.4 3 3.3.4-2.4 2.2.6 3.2-2.9-1.6-2.9 1.6.6-3.2L1.8 5.2l3.3-.4z"/>',
   clock:'<circle cx="6.5" cy="6.5" r="4.6"/><path d="M6.5 3.6v3l2 1.2"/>',
   cake:'<path d="M2.2 7.6h8.6v3.6H2.2zM2.2 9.4c1 0 1 .9 2.1.9s1.1-.9 2.2-.9 1.1.9 2.2.9 1.1-.9 2.1-.9M4.4 7.6V5.6M6.5 7.6V5.2M8.6 7.6V5.6M4.4 4.2v-.6M6.5 3.8v-.6M8.6 4.2v-.6"/>',
-  cornell:'<path d="M2 3.4h9v7.4H2zM2 5.6h9M4.3 2.2v2.2M8.7 2.2v2.2"/><path d="M4 7.6h1.4M7.6 7.6H9M4 9.2h1.4M7.6 9.2H9" stroke-width="1.2"/>'
+  cornell:'<path d="M2 3.4h9v7.4H2zM2 5.6h9M4.3 2.2v2.2M8.7 2.2v2.2"/><path d="M4 7.6h1.4M7.6 7.6H9M4 9.2h1.4M7.6 9.2H9" stroke-width="1.2"/>',
+  chef:'<path d="M1.5 2.5h6v4H4l-2 2v-2H1.5z"/><path d="M7 5.5h4.5v3.2H9l-1.6 1.6V8.7H7z"/>'
 };
 function glyphSVG(name,color){
   return '<svg class="glyph" viewBox="0 0 13 13" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+GLYPHS[name]+'</svg>';
@@ -790,7 +792,7 @@ function renderTray(){
   const items=state.events.filter(e=>e.layer!=='academic'&&!e.date&&state.filters.has(e.track));
   if(!items.length){T.innerHTML='';return;}
   items.sort((a,b)=>TRACK_KEYS.indexOf(a.track)-TRACK_KEYS.indexOf(b.track)||a.title.localeCompare(b.title));
-  T.innerHTML='<div class="sec-h"><h2>Needs a date</h2><p>Real obligations with nobody’s finger on a day yet. Open one, give it a date, and it moves onto the grid.</p></div><div class="traygrid">'+
+  T.innerHTML='<div class="sec-h"><h2>Needs a date</h2><p>Give one a date to move it onto the grid.</p></div><div class="traygrid">'+
     items.map(e=>'<button class="traycard" data-ev="'+e.id+'" style="border-left-color:'+TRACKS[e.track].color+'"><h4>'+esc(e.title)+'</h4><p>'+esc(TRACKS[e.track].name)+(e.committee?' · '+esc(CSHORT[e.committee]||''):'')+'</p></button>').join('')+'</div>';
   T.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>openEvent(b.dataset.ev));
 }
@@ -1058,7 +1060,7 @@ function renderGuests(){
   const guests=[...state.guests];
   const upcomingOrNow=guests.filter(g=>!g.departure||g.departure>=tk).sort((a,b)=>(a.arrival||'9999').localeCompare(b.arrival||'9999'));
   const past=guests.filter(g=>g.departure&&g.departure<tk).sort((a,b)=>(b.departure||'').localeCompare(a.departure||''));
-  let h='<div class="sec-h" style="margin-top:6px"><h2>Guests</h2><p>Who’s staying at the House, and who’s hosting them.</p></div>';
+  let h='<div class="sec-h" style="margin-top:6px"><h2>Guests</h2><p>Who’s staying, and who’s hosting.</p></div>';
   h+=upcomingOrNow.length?'<div class="trackgrid">'+upcomingOrNow.map(guestCard).join('')+'</div>':'<p class="section-empty">No guests logged. Use <b>+ Add</b>.</p>';
   if(past.length) h+='<div class="sec-h" style="margin-top:26px"><h2>Past</h2></div><div class="trackgrid">'+past.map(guestCard).join('')+'</div>';
   V.innerHTML=h;
