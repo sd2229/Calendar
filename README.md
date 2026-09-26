@@ -1,4 +1,4 @@
-# The Ultimate House Calendar
+# Telly Cally
 
 A single-page calendar for the **Cornell Branch of the Telluride Association**
 (Telluride House). Four views — Day, Month, Agenda, and a Term grid — over a
