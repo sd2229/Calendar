@@ -159,12 +159,6 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
 .traycard:hover{border-color:var(--rule-strong);background:var(--surface-2)}
 .traycard h4{font-size:16px;margin-bottom:1px;font-weight:600}
 .traycard p{margin:0;font-size:13px;color:var(--muted)}
-.rules{margin-top:28px}
-.rulelist{display:grid;grid-template-columns:repeat(auto-fill,minmax(296px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:12px;overflow:hidden;margin-top:12px}
-.rule{background:var(--surface);padding:12px 14px}
-.rule b{display:block;font-size:16px;margin-bottom:2px}
-.rule p{margin:0;font-size:14.5px;color:var(--ink-2)}
-.cite{font-family:var(--fs-m);font-size:9.5px;color:var(--muted);letter-spacing:.05em;margin-top:5px;display:block;text-transform:uppercase}
 
 /* ---------- sections: forms & guests ---------- */
 .calnav{display:flex;gap:10px 18px;align-items:baseline;flex-wrap:wrap}
@@ -356,14 +350,6 @@ tr.now td{background:color-mix(in srgb,var(--accent) 9%,transparent)}
 
   <section class="tray" id="tray"></section>
 
-  <section class="rules" id="rules">
-    <div class="sec-h">
-      <h2>Standing rules</h2>
-      <p>Clocks the House already agreed to.</p>
-    </div>
-    <div class="rulelist" id="rulelist"></div>
-  </section>
-
   <footer class="foot">
     <span>Cornell Registrar dates, 2026–27.</span>
     <span>Press F to present.</span>
@@ -532,17 +518,6 @@ const COMMITTEES = [
 ];
 const CSHORT = Object.fromEntries(COMMITTEES.map(c=>[c[0],c[1].split(' — ')[0]]));
 
-const STANDING_RULES = [
-  ['BIRTs: 24 hours','On the listserv 24h before the meeting that considers it.','Catputter’s Rules of Order'],
-  ['Paid services: two weeks','Preliminary BIRT and purchase passed two weeks out.','CBTA Bylaws VII.5.7'],
-  ['Service invoices: one week','Reimbursement forms to Treasurers a week before the event.','CBTA Bylaws VII.5.5–5.6'],
-  ['Reimbursements: one month','To Treasurers within a month of purchase; none after the last day of class.','CBTA Bylaws VII.5.1–5.2'],
-  ['Ten+ outside guests','Needs legislation in advance, naming who’s responsible for safety.','Social Gatherings Threshold'],
-  ['Attendance: one week','Dispute the record within a week. Five tardies = one absence.','CBTA Bylaws V.4.d, V.1.b'],
-  ['Event lengths','PubSpeaks one hour. Housemeeting until it finishes. CHEF as its BIRT says.','CBTA Bylaws V.1.a'],
-  ['Vacating rooms','Two days after the last final, unless Head of Staff or MPM says otherwise.','TARP IV.A.1(d)']
-];
-
 /* ============================ date helpers ============================ */
 const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
@@ -684,13 +659,12 @@ function render(){
   $('calnav').style.display = cal?'':'none';
   $('legend').style.display = cal?'':'none';
   $('tray').style.display = cal?'':'none';
-  $('rules').style.display = cal?'':'none';
   if(state.section==='forms'){ renderForms(); renderStatus(); return; }
   if(state.section==='guests'){ renderGuests(); renderStatus(); return; }
   BRK=breakDays();
   document.getElementById('tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.view===state.view)));
   ({day:renderDay,month:renderMonth,agenda:renderAgenda,term:renderTerm}[state.view])();
-  renderTray(); renderRules(); renderStatus();
+  renderTray(); renderStatus();
 }
 function renderDay(){
   const d=state.day, k=key(d);
@@ -819,12 +793,6 @@ function renderTray(){
   T.innerHTML='<div class="sec-h"><h2>Needs a date</h2><p>Real obligations with nobody’s finger on a day yet. Open one, give it a date, and it moves onto the grid.</p></div><div class="traygrid">'+
     items.map(e=>'<button class="traycard" data-ev="'+e.id+'" style="border-left-color:'+TRACKS[e.track].color+'"><h4>'+esc(e.title)+'</h4><p>'+esc(TRACKS[e.track].name)+(e.committee?' · '+esc(CSHORT[e.committee]||''):'')+'</p></button>').join('')+'</div>';
   T.querySelectorAll('[data-ev]').forEach(b=>b.onclick=()=>openEvent(b.dataset.ev));
-}
-function renderRules(){
-  const R=document.getElementById('rulelist');
-  if(R.dataset.done) return;
-  R.innerHTML=STANDING_RULES.map(r=>'<div class="rule"><b>'+esc(r[0])+'</b><p>'+esc(r[1])+'</p><span class="cite">'+esc(r[2])+'</span></div>').join('');
-  R.dataset.done='1';
 }
 function renderStatus(){
   const S=document.getElementById('statusbanner');
